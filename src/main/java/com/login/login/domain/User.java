@@ -7,18 +7,16 @@ import org.springframework.security.core.GrantedAuthority;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) //construtor protegido para JPA
+@AllArgsConstructor(access = AccessLevel.PRIVATE) //construtor privado para uso interno
+@Builder (toBuilder = true) //builder para facilitar criação de objetos
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,8 +30,18 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String name;
-
+    
+    //builder default para novo usuário ser habilitado por padrão (true) 
+    @Builder.Default
     private boolean enabled = true;
+    public static User ofnew(String email, String password, String name) {
+        return User.builder()
+            .email(email)
+            .password(password)
+            .name(name)
+            .enabled(true)
+            .build();
+    }
 
     //implementação dos métodos da interface UserDetails
     @Override

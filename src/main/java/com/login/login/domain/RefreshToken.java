@@ -13,6 +13,9 @@ import lombok.*;
 @Table(name = "refresh_token")
 @Getter
 @Setter
+@NoArgsConstructor (access = AccessLevel.PROTECTED) //construtor protegido para JPA
+@AllArgsConstructor (access = AccessLevel.PRIVATE) //construtor privado para uso interno
+@Builder (toBuilder = true) //builder para facilitar criação de objetos
 public class RefreshToken {
 
     @Id
@@ -28,6 +31,7 @@ public class RefreshToken {
     @Column (nullable = false)
     private Instant expiresAt; //validade do token
 
+    @Builder.Default
     @Column (nullable = false)
     private boolean revoked = false; //se o token foi revogado
 }
