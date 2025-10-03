@@ -1,5 +1,7 @@
 package com.login.login.domain;
 
+import java.time.Instant;
+
 import jakarta.persistence.*;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
