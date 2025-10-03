@@ -53,6 +53,4 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
         return p.startsWith("/auth")  || p.startsWith("/css") || p.startsWith("/js") || p.startsWith("/images") || p.startsWith("/");
 
     }
-
-    
 }
