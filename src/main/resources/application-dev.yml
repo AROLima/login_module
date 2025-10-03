@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    # URL padrão do Postgres local
+    url: jdbc:postgresql://localhost:5432/auth
+    username: auth
+    password: auth
+  jpa:
+    hibernate:
+      # Em produção: validar o schema gerenciado pelo Flyway (sem auto-update)
+      ddl-auto: validate
+    properties:
+      hibernate.format_sql: true
+  flyway:
+    # Flyway ligado e apontando pra pasta padrão
+    enabled: true
+    locations: classpath:db/migration
+    # Se já houver tabelas existentes, permite "marcar" baseline
+    baseline-on-migrate: true
+
+app:
+  jwt:
+    issuer: example-auth                   # Emissor gravado no token
+    access-ttl-min: 15                     # Duração do access token (minutos)
+    refresh-ttl-days: 7                    # Duração do refresh (dias)
+    # Segredo em Base64 (≥256 bits). Em produção, passe via variável de ambiente JWT_SECRET
+    # Gere com: openssl rand -base64 48
+    secret: ${JWT_SECRET:VGhpcy1pcy1qd3Qtc2VjcmV0LWJhc2U2NC1wbGFjZWhvbGRlci0xMjM0NTY3ODkwMTIzNDU2}
+  cookies:
+    domain: localhost                      # Ajuste no deploy (ex.: .minhaapp.com)
+    secure: false                          # true em produção (HTTPS)
+    same-site: Lax                         # Lax cobre a maioria dos casos
+
+server:
+  servlet:
+    session:
+      cookie:
+        same-site: Lax                     # Garante SameSite também no cookie de sessão, se existir

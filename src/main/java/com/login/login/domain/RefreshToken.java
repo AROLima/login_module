@@ -30,5 +30,4 @@ public class RefreshToken {
 
     @Column (nullable = false)
     private boolean revoked = false; //se o token foi revogado
-
 }

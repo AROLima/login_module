@@ -41,6 +41,7 @@ public class User implements UserDetails {
         //MVP: Todos os  usuários são ROLE_USER
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
+    
     @Override
     public String getUsername() {
         return email;
