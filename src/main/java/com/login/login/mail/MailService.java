@@ -2,8 +2,7 @@ package com.login.login.mail;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-
-import com.jetbrains.exported.JBRApi.Service;
+import org.springframework.stereotype.Service;
 
 import jakarta.mail.MessagingException;
 
@@ -34,9 +33,9 @@ public class MailService {
                 (válido por 30 minutos)
                     """, link), false);
             sender.send(helper.getMimeMessage());
-    } catch(MessagingException e){
+        } catch(MessagingException e){
         throw new IllegalStateException(e);
-    }
+     }
     }
     
 }

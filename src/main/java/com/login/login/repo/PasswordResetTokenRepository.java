@@ -8,5 +8,6 @@ import com.login.login.domain.PasswordResetToken;
 
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Long> {
     Optional<PasswordResetToken> findByToken(String token);
+    Optional<PasswordResetToken> findByTokenAndUsedFalse(String token);
     
 }
