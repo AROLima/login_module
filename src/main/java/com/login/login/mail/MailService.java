@@ -20,7 +20,7 @@ public class MailService {
     }
 
     public void sendResetEmail(String to, String token){
-        var link = baseUrl + "/auth/reset" + token;
+        var link = baseUrl + "/auth/reset/" + token;
         var helper = new MimeMessageHelper(sender.createMimeMessage());
         try{
             helper.setTo(to);

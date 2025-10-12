@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir Senha - Sistema de Autenticação</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <div class="container d-flex justify-content-center align-items-center min-vh-100">
+        <div class="card shadow" style="width: 100%; max-width: 400px;">
+            <div class="card-header text-center bg-info text-white">
+                <h4><i class="fas fa-lock me-2"></i>Redefinir Senha</h4>
+            </div>
+            <div class="card-body">
+                <!-- Mensagem de sucesso -->
+                <div th:if="${success}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i><span th:text="${success}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <!-- Mensagem de erro -->
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i><span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <p class="text-muted text-center mb-4">
+                    Digite sua nova senha abaixo.
+                </p>
+                
+                <form th:action="@{'/auth/reset/' + ${token}}" method="post" th:object="${form}">
+                    <input type="hidden" th:value="${token}" name="token" />
+                    
+                    <div class="mb-3">
+                        <label for="newpassword" class="form-label">
+                            <i class="fas fa-lock me-1"></i>Nova Senha
+                        </label>
+                        <input type="password" 
+                               class="form-control" 
+                               th:classappend="${#fields.hasErrors('newpassword')} ? 'is-invalid' : ''"
+                               id="newpassword" 
+                               th:field="*{newpassword}"
+                               placeholder="Mínimo 8 caracteres" 
+                               minlength="8"
+                               required>
+                        <div th:if="${#fields.hasErrors('newpassword')}" class="invalid-feedback">
+                            <span th:errors="*{newpassword}"></span>
+                        </div>
+                        <div class="form-text">A senha deve ter pelo menos 8 caracteres.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="confirmPassword" class="form-label">
+                            <i class="fas fa-lock me-1"></i>Confirmar Nova Senha
+                        </label>
+                        <input type="password" 
+                               class="form-control" 
+                               id="confirmPassword" 
+                               name="confirmPassword"
+                               placeholder="Confirme a nova senha" 
+                               minlength="8"
+                               required>
+                    </div>
+                    
+                    <div class="d-grid mb-3">
+                        <button type="submit" class="btn btn-info">
+                            <i class="fas fa-save me-2"></i>Redefinir Senha
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="text-center">
+                    <a th:href="@{/auth/login}" class="text-decoration-none">
+                        <i class="fas fa-arrow-left me-1"></i>Voltar ao login
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -13,24 +13,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.login.login.jwt.JwtAuthenticationFilter;
-import com.login.login.jwt.JwtService;
 import com.login.login.repo.UserRepository;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
-
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-
-    public SecurityConfig(JwtService jwtService, UserRepository userRepository) {
-        this.jwtService = jwtService;
-        this.userRepository = userRepository;
-    }
 
     /**
      * Configura o encoder de senha usando BCrypt
@@ -45,7 +34,7 @@ public class SecurityConfig {
      */
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
-        return username -> userRepository.findByUsername(username)
+        return username -> userRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
 
@@ -58,23 +47,34 @@ public class SecurityConfig {
     }
 
     /**
-     * Configura a cadeia de filtros de segurança HTTP com JWT
+     * Configura a cadeia de filtros de segurança HTTP para aplicação web com Thymeleaf
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtService, userRepository);
-        
         return http
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .csrf(csrf -> csrf.disable()) // Desabilitar CSRF por enquanto (pode habilitar depois)
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)) // Permitir sessões
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/api/public/**").permitAll()
+                .requestMatchers("/auth/**", "/css/**", "/js/**", "/images/**", "/").permitAll() // Rotas públicas
                 .requestMatchers("/h2-console/**").permitAll() // Para desenvolvimento com H2
                 .anyRequest().authenticated()
             )
+            .formLogin(form -> form
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/login") 
+                .usernameParameter("username")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/dashboard", true)
+                .failureUrl("/auth/login?error=true")
+                .permitAll()
+            )
+            .logout(logout -> logout
+                .logoutUrl("/auth/logout")
+                .logoutSuccessUrl("/auth/login?logout")
+                .permitAll()
+            )
             .headers(headers -> headers
                 .frameOptions(frameOptions -> frameOptions.disable())) // Para H2 Console
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
     }
 }

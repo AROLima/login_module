@@ -11,8 +11,6 @@ import com.login.login.domain.PasswordResetToken;
 import com.login.login.mail.MailService;
 import com.login.login.repo.PasswordResetTokenRepository;
 import com.login.login.repo.UserRepository;
-
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -60,5 +58,9 @@ public class PasswordResetService {
         var user = prt.getUser();
         user.setPassword(encoder.encode(newPassword));
         prt.setUsed(true);
+        
+        // Salvar as alterações no banco
+        users.save(user);
+        tokens.save(prt);
     }
 }

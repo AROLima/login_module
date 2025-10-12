@@ -10,5 +10,8 @@ public record RegisterFormDto(
   @Size(min = 8) 
   String password,
   @NotBlank 
-  String name
+  String name,
+  @NotBlank 
+  @Size(min = 8) 
+  String confirmPassword
 ) {}
