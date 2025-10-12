@@ -119,6 +119,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>5.3.22</version> <!-- Use the appropriate version for your project -->
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
