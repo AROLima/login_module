@@ -502,15 +502,6 @@ login/
 - **Logging** (auditoria e debug)
 - **Documentation** (código autodocumentado)
 
-## 🤝 Contribuição
-
-### 🌟 Como Contribuir
-
-1. **Fork** o repositório
-2. **Crie** uma branch: `git checkout -b feature/nova-funcionalidade`
-3. **Commit** suas mudanças: `git commit -m 'Add: nova funcionalidade'`
-4. **Push** para a branch: `git push origin feature/nova-funcionalidade`
-5. **Abra** um Pull Request
 
 ### 💡 Ideias de Melhorias
 
@@ -531,17 +522,11 @@ Use as [Issues](../../issues) do GitHub para reportar bugs ou sugerir melhorias.
 
 ---
 
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
----
-
 ## 👨‍💻 Autor
 
 **Rodrigo Lima**
-- 📧 Email: [seu-email@example.com](mailto:seu-email@example.com)
-- 💼 LinkedIn: [linkedin.com/in/seu-perfil](https://linkedin.com/in/seu-perfil)
+- 📧 Email: [rodrigo.lima546@hotmail.com](mailto:rodrigo.lima546@hotmail.com)
+- 💼 LinkedIn: [linkedin.com/in/seu-perfil](https://www.linkedin.com/in/anderson-de-oliveiralima/)](https://www.linkedin.com/in/anderson-de-oliveiralima/)
 - 🐙 GitHub: [@AROLima](https://github.com/AROLima)
 
 ---
