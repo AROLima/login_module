@@ -1,44 +1,198 @@
+# =============================================================================
+# CONFIGURAÇÃO DE DESENVOLVIMENTO (application-dev.yml)
+# =============================================================================
+# 
+# Este arquivo contém configurações específicas para o ambiente de desenvolvimento.
+# Para ativar: spring.profiles.active=dev (no application.yml ou variável ambiente)
+#
+# DIFERENÇAS POR AMBIENTE:
+# - Desenvolvimento: banco em memória, cache desabilitado, logs detalhados
+# - Produção: banco real, cache ativado, logs reduzidos, HTTPS obrigatório
+# - Testes: banco temporário, configurações simplificadas
+# =============================================================================
+
+# CONFIGURAÇÕES DO SPRING FRAMEWORK
 spring:
+  
+  # =============================================================================
+  # BANCO DE DADOS (H2 IN-MEMORY)
+  # =============================================================================
+  # H2 é um banco em memória perfeito para desenvolvimento:
+  # - Rápido (tudo na RAM)
+  # - Não precisa instalar nada
+  # - Reinicia limpo a cada execução
+  # - Console web para visualizar dados
   datasource:
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password: 
-    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb        # Banco em memória chamado "testdb"
+    username: sa                   # Username padrão H2 (sem senha)
+    password:                      # Senha vazia (desenvolvimento apenas!)
+    driver-class-name: org.h2.Driver  # Driver JDBC do H2
+    
+  # =============================================================================
+  # JPA/HIBERNATE (MAPEAMENTO OBJETO-RELACIONAL)
+  # =============================================================================
   jpa:
     # Para desenvolvimento com H2, criar tabelas automaticamente
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create-drop        # Cria tabelas ao iniciar, deleta ao parar
+      #         ↑
+      # Valores possíveis:
+      # - create-drop: cria/deleta a cada execução (desenvolvimento)
+      # - create: cria na primeira execução
+      # - update: atualiza schema conforme entidades mudam
+      # - validate: só valida se schema está correto (produção)
+      # - none: não faz nada automaticamente
+      
     properties:
       hibernate:
-        "format_sql": true
-    show-sql: true
+        "format_sql": true         # Formata SQL nos logs (mais legível)
+        
+    show-sql: true                 # Mostra SQLs executados no console
+    #         ↑
+    # ÚTIL PARA APRENDER: vê exatamente que queries o JPA gera
+    
+  # =============================================================================  
+  # CONSOLE H2 (INTERFACE WEB DO BANCO)
+  # =============================================================================
   h2:
     console:
-      enabled: true
+      enabled: true                # Habilita console web em /h2-console
+      #       ↑
+      # Acesse: http://localhost:8080/h2-console
+      # JDBC URL: jdbc:h2:mem:testdb
+      # Username: sa (senha vazia)
+      
+  # =============================================================================
+  # THYMELEAF (TEMPLATE ENGINE)
+  # =============================================================================  
   thymeleaf:
-    cache: false
+    cache: false                   # Desabilita cache para desenvolvimento
+    #      ↑
+    # Com cache desabilitado: mudanças no HTML aparecem imediatamente
+    # Em produção deve ser true para performance
+    
+  # =============================================================================
+  # FLYWAY (MIGRATIONS DE BANCO)
+  # =============================================================================
   flyway:
-    enabled: false
+    enabled: false                 # Desabilitado (usando create-drop do Hibernate)
+    #       ↑
+    # Flyway controla versão do schema via arquivos SQL
+    # Com H2 create-drop não precisamos dele em dev
+    
+  # =============================================================================
+  # EMAIL (MAILTRAP PARA DESENVOLVIMENTO)
+  # =============================================================================
   mail:
-    host: sandbox.smtp.mailtrap.io
-    port: 2525
-    username: 02f91f661badbc
-    password: 3b44e5a204ac35
+    host: sandbox.smtp.mailtrap.io # Serviço para testar emails (não entrega real)
+    port: 2525                     # Porta do Mailtrap
+    username: 02f91f661badbc       # Credenciais do Mailtrap (substituir pelas suas)
+    password: 3b44e5a204ac35       # Senha do Mailtrap (substituir pela sua)
     properties:
-      "mail.smtp.auth": true
-      "mail.smtp.starttls.enable": true
+      "mail.smtp.auth": true       # Requer autenticação SMTP
+      "mail.smtp.starttls.enable": true  # Usa TLS para segurança
+      
+    # MAILTRAP é perfeito para desenvolvimento porque:
+    # - Captura emails sem enviar de verdade
+    # - Interface web para visualizar emails enviados
+    # - Testa toda lógica de email sem spam
+    # 
+    # ALTERNATIVAS:
+    # - MailHog (local): host: localhost, port: 1025
+    # - Gmail SMTP: host: smtp.gmail.com, port: 587 (precisa app password)
+    # - SendGrid: host: smtp.sendgrid.net, port: 587
 
+# =============================================================================
+# CONFIGURAÇÕES CUSTOMIZADAS DA APLICAÇÃO
+# =============================================================================
+# Seção "app" contém configurações específicas do nosso sistema
 app:
+  
+  # =============================================================================
+  # JWT (JSON WEB TOKENS)
+  # =============================================================================
   jwt:
-    issuer: example-auth            # claim "iss" do token
-    access-ttl-min: 15              # tempo do access (min)
-    refresh-ttl-days: 7             # tempo do refresh (dias)
-    # Secret em Base64 (≥256 bits). Produção: usar env JWT_SECRET
+    issuer: example-auth                    # Claim "iss" do token (identifica quem emitiu)
+    access-ttl-min: 15                      # Tempo de vida do access token (minutos)
+    refresh-ttl-days: 7                     # Tempo de vida do refresh token (dias)
+    
+    # Chave secreta para assinar tokens (Base64, ≥256 bits)
+    # IMPORTANTE: Em produção usar variável ambiente JWT_SECRET
     secret: ${JWT_SECRET:VGhpcy1pcy1qd3Qtc2VjcmV0LWJhc2U2NC1wbGFjZWhvbGRlci0xMjM0NTY3ODkwMTIzNDU2}
+    #       ↑                ↑
+    # Env variable    Valor padrão (só desenvolvimento!)
+    
+    # SEGURANÇA CRÍTICA:
+    # - Chave deve ter pelo menos 256 bits (32 caracteres)
+    # - Nunca commitar chave real no Git
+    # - Gerar nova chave por ambiente
+    # - Rotar chave periodicamente em produção
+    
+  # =============================================================================
+  # COOKIES (CONFIGURAÇÃO DE SEGURANÇA)
+  # =============================================================================  
   cookies:
-    domain: localhost               # ajuste no deploy (ex.: .minhaapp.com)
-    secure: false                   # true em produção (HTTPS)
-    same-site: Lax                  # Lax para formulários; cross-site real: None+Secure
+    domain: localhost                       # Domínio válido para cookies
+    secure: false                           # true em produção (HTTPS obrigatório)
+    same-site: Lax                          # Controle CSRF: Lax, Strict ou None
+    
+    # VALORES DE SAME-SITE:
+    # - Lax: permite formulários cross-site (recomendado para web apps)
+    # - Strict: nunca envia cross-site (mais seguro, pode quebrar funcionalidades)
+    # - None: sempre envia (requer Secure=true, para APIs)
+    
+  # =============================================================================
+  # SEGURANÇA GERAL
+  # =============================================================================
   security:
-    reset-token-expiration-minutes: 30
-    base-url: http://localhost:8080
+    reset-token-expiration-minutes: 30      # Expiração do token de reset de senha
+    base-url: http://localhost:8080         # URL base para links em emails
+    
+    # Em outros ambientes:
+    # - Homologação: https://staging.meuapp.com  
+    # - Produção: https://meuapp.com
+
+# =============================================================================
+# CONFIGURAÇÕES PARA OUTROS AMBIENTES
+# =============================================================================
+#
+# application-prod.yml (PRODUÇÃO):
+# spring:
+#   datasource:
+#     url: jdbc:postgresql://localhost:5432/logindb
+#     username: ${DB_USER}
+#     password: ${DB_PASSWORD}
+#     driver-class-name: org.postgresql.Driver
+#   jpa:
+#     hibernate:
+#       ddl-auto: validate  # Nunca alterar schema em produção!
+#     show-sql: false       # Não mostrar SQL em produção
+#   h2:
+#     console:
+#       enabled: false      # Desabilitar console em produção
+#   thymeleaf:
+#     cache: true           # Cache ativado para performance
+#   mail:
+#     host: smtp.gmail.com  # SMTP real
+#     port: 587
+#     username: ${EMAIL_USER}
+#     password: ${EMAIL_PASSWORD}
+#
+# app:
+#   cookies:
+#     domain: .meuapp.com   # Permite subdomínios
+#     secure: true          # HTTPS obrigatório
+#   security:
+#     base-url: https://meuapp.com
+#
+# application-test.yml (TESTES):
+# spring:
+#   datasource:
+#     url: jdbc:h2:mem:testdb
+#   mail:
+#     host: localhost
+#     port: 1025            # MailHog para testes
+# app:
+#   jwt:
+#     access-ttl-min: 1     # Expiração rápida para testes
+# =============================================================================
