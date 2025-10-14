@@ -113,7 +113,8 @@ app:
   # =============================================================================
   jwt:
     issuer: example-auth                    # Claim "iss" do token (identifica quem emitiu)
-    access-ttl-min: 15                      # Tempo de vida do access token (minutos)
+    access-token:
+      ttl-min: 15                          # Tempo de vida do access token (minutos)
     refresh-ttl-days: 7                     # Tempo de vida do refresh token (dias)
     
     # Chave secreta para assinar tokens (Base64, ≥256 bits)
