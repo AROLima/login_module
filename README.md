@@ -2,6 +2,12 @@
 
 > Um sistema completo de autenticação com JWT, desenvolvido com Spring Boot 3 e as melhores práticas de segurança.
 
+## 🌐 Idiomas / Languages / Langues
+
+[![Português](https://img.shields.io/badge/Português-🇧🇷-green?style=for-the-badge)](README.md)
+[![English](https://img.shields.io/badge/English-🇺🇸-blue?style=for-the-badge)](README_EN.md)
+[![Français](https://img.shields.io/badge/Français-🇫🇷-red?style=for-the-badge)](README_FR.md)
+
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.6-brightgreen?style=for-the-badge&logo=spring-boot)
 ![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)
 ![Security](https://img.shields.io/badge/Spring%20Security-6-red?style=for-the-badge&logo=springsecurity)
